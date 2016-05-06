@@ -73,5 +73,19 @@ namespace MonoGame.Extended.Shapes.Curves
             var angle = 2 * (i * _startControl + t * _controlEnd);
             return new OrientedPoint(pos, Angle.FromVector(angle));
         }
+        
+        public void Split(float t, out QuadraticBezier first, out QuadraticBezier second)
+        {
+            t = Normalize(t);
+            var i = 1f - t;
+            var middle = t * t * EndPoint - 2 * t * i * _controlPoint + i * i * StartPoint;
+
+            first = new QuadraticBezier(StartPoint,
+                t * _controlPoint - i * StartPoint,
+                middle);
+            second = new QuadraticBezier(middle,
+                t * EndPoint - i * _controlPoint,
+                EndPoint);
+        }
     }
 }

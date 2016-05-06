@@ -4,7 +4,7 @@ using MonoGame.Extended.Particles;
 
 namespace MonoGame.Extended.Shapes.Curves
 {
-    public abstract class CurveBase
+    public abstract class CurveBase : IPath
     {
         private Vector2 _startPoint;
         private Vector2 _endPoint;
@@ -43,23 +43,11 @@ namespace MonoGame.Extended.Shapes.Curves
             }
         }
 
-
         /// <summary>
         /// Returns an approximation of the length by getting some points and checking the distance between.
         /// </summary>
-        /// <param name="resolution">The amount of points calculated.</param>
-        public virtual float Length(int resolution)
-        {
-            var previous = GetPositionAt(0);
-            float result = 0;
-            for (var i = 1f; i < resolution; i++)
-            {
-                var current = GetPositionAt(i / resolution);
-                result += Vector2.Distance(previous, current);
-                previous = current;
-            }
-            return result;
-        }
+        /// <value>The amount of points calculated.</value>
+        public abstract float Length { get; }
 
         /// <summary>
         /// Invokes after a point has changed

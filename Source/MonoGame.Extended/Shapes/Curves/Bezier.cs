@@ -3,33 +3,30 @@ using Microsoft.Xna.Framework;
 
 namespace MonoGame.Extended.Shapes.Curves
 {
+    //handles the normalizing for each type of bezier
     public abstract class Bezier : CurveBase
     {
-        protected Bezier(Vector2 start, Vector2 end) : base(start, end) { }
+        protected Bezier(Vector2 start, Vector2 end) : base(start, end)
+        {
+            var recommendedResolution = Math.Max(5, GetRecommendedResolution());
+            NormalizeLength();
+            Resolution = recommendedResolution;
+        }
 
         private float[] _lengths;
 
         public abstract int Order { get; }
-        public int RecommendedResolution { get; private set; }
+        public int Resolution { get; private set; }
 
-        public override float Length(int resolution)
-        {
-            if (_lengths != null && resolution == _lengths.Length) return _lengths[resolution - 1];
-            return base.Length(resolution);
-        }
+        public override float Length => _lengths[Resolution - 1];
 
-        public void NormalizeLength(int resolution)
+        private void NormalizeLength()
         {
-            _lengths = null;
-            if (resolution < 2)
-            {
-                return;
-            }
-            float resf = resolution - 1;
-            var arr = new float[resolution];
+            float resf = Resolution - 1;
+            var arr = new float[Resolution];
             var previous = StartPoint;
             var total = 0f;
-            for (int i = 1; i < resolution; i++)
+            for (int i = 1; i < Resolution; i++)
             {
                 var t = i / resf;
                 var current = GetPositionAt(t);
@@ -43,7 +40,6 @@ namespace MonoGame.Extended.Shapes.Curves
 
         protected float Normalize(float t)
         {
-            if (_lengths == null) return t;
             var arr = _lengths;
             var count = arr.Length;
             t *= _lengths[count - 1];
@@ -60,27 +56,30 @@ namespace MonoGame.Extended.Shapes.Curves
         protected override void OnPointChange()
         {
             _lengths = null;
-            var recommendedResolution = GetRecommendedResolution();
-            if (recommendedResolution > 0 && recommendedResolution < 2) recommendedResolution = 2;
-            RecommendedResolution = recommendedResolution;
+            var recommendedResolution = Math.Max(5, GetRecommendedResolution());
+            NormalizeLength();
+            Resolution = recommendedResolution;
             base.OnPointChange();
         }
 
         protected abstract int GetRecommendedResolution();
 
-        ///// <summary>
-        ///// Returns a point calculated by the bezier calculation for a given t.
-        ///// The result is never normalized.
-        ///// </summary>
-        //public abstract Vector2 GetBezierPoint(float t);
-
-
-        ///// <summary>
-        ///// Returns the angle calculated by the bezier tangent calculation for a given t.
-        ///// The result is never normalized.
-        ///// </summary>
-        //public abstract Angle GetBezierTangent(float t);
-
-        //protected abstract OrientedPoint GetBezierOrientedPoint(float t);
+        public static Bezier Create(Vector2 start, Vector2 end, Vector2[] controlPoints)
+        {
+            Bezier result;
+            switch (controlPoints.Length)
+            {
+                case 1:
+                    result = new QuadraticBezier(start, controlPoints[0], end);
+                    break;
+                case 2:
+                    result = new CubicBezier(start, controlPoints[0], controlPoints[1], end);
+                    break;
+                default:
+                    result = new NBezier(start, end, controlPoints);
+                    break;
+            }
+            return result;
+        }
     }
 }

@@ -144,9 +144,10 @@
     <Compile Include="Shapes\Curves\Bezier.cs" />
     <Compile Include="Shapes\Curves\CubicBezier.cs" />
     <Compile Include="Shapes\Curves\CurveBase.cs" />
-    <Compile Include="Shapes\Curves\CurveF.cs" />
+    <Compile Include="Shapes\Curves\LineSegment.cs" />
     <Compile Include="Shapes\Curves\NBezier.cs" />
     <Compile Include="Shapes\Curves\OrientedPoint.cs" />
+    <Compile Include="Shapes\Curves\Path.cs" />
     <Compile Include="Shapes\Curves\QuadraticBezier.cs" />
     <Compile Include="Shapes\SpriteBatchExtensions.cs" />
     <Compile Include="Shapes\CircleF.cs" />

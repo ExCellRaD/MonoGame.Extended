@@ -26,9 +26,6 @@ namespace MonoGame.Extended.Shapes.Curves
 
         private Vector2 _controlPoint1;
         private Vector2 _controlPoint2;
-        private Vector2 _startControl1;
-        private Vector2 _control1Control2;
-        private Vector2 _control2End;
 
         public CubicBezier(Vector2 start, Vector2 controlpoint1, Vector2 controlpoint2, Vector2 end) : base(start, end)
         {
@@ -60,20 +57,11 @@ namespace MonoGame.Extended.Shapes.Curves
 
         public override int Order => 4;
 
-        protected override void OnPointChange()
-        {
-            base.OnPointChange();
-            _startControl1 = _controlPoint1 - StartPoint;
-            _control1Control2 = _controlPoint2 - _controlPoint1;
-            _control2End = EndPoint - _controlPoint2;
-        }
-
-
         protected override int GetRecommendedResolution()
         {
-            var length1 = _startControl1.LengthSquared();
-            var length2 = _control1Control2.LengthSquared();
-            var length3 = _control2End.LengthSquared();
+            var length1 = (_controlPoint1 - StartPoint).LengthSquared();
+            var length2 = (_controlPoint2 - _controlPoint1).LengthSquared();
+            var length3 = (EndPoint - _controlPoint2).LengthSquared();
             // if (length2 - length1 <= float.Epsilon) return 0;
             var avg = (length1 + length2 + length3) / 3;
             return (int)(Math.Sqrt(Math.Max(Math.Max(length1, length2), length3) - avg) / 10d);
@@ -90,7 +78,7 @@ namespace MonoGame.Extended.Shapes.Curves
                    3f * i * tt * _controlPoint2 +
                    tt * t * EndPoint;
         }
-        
+
         public override Angle GetTangentAt(float t)
         {
             t = Normalize(t);
@@ -123,6 +111,24 @@ namespace MonoGame.Extended.Shapes.Curves
                           (-3f * tt + 2f * t) * _controlPoint2 +
                           end;
             return new OrientedPoint(pos, Angle.FromVector(angle));
+        }
+
+        public void Split(float t, out CubicBezier first, out CubicBezier second)
+        {
+            t = Normalize(t);
+            var i = 1f - t;
+            var ii = i * i;
+            var tt = t * t;
+            var middle = tt * t * EndPoint - 3 * tt * i * _controlPoint2 + 3 * t * ii * _controlPoint1 - ii * i * StartPoint;
+
+            first = new CubicBezier(StartPoint,
+                t * _controlPoint1 - i * StartPoint,
+                tt * _controlPoint2 - 2 * t * i * _controlPoint1 + ii * StartPoint,
+                middle);
+            second = new CubicBezier(middle,
+                tt * EndPoint - 2 * t * i * _controlPoint2 + ii * _controlPoint1,
+                t * EndPoint - i * _controlPoint2,
+                EndPoint);
         }
     }
 }

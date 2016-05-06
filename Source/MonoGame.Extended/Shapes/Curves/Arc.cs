@@ -22,7 +22,7 @@ namespace MonoGame.Extended.Shapes.Curves
 
         public float Radius { get; private set; }
         public Vector2 Center { get; private set; }
-        public static float GradientIncrement { get; set; } = 0.0001f;
+        public static float GradientIncrement { get; set; } = 0.00001f;
 
         public Vector2 MiddlePoint
         {
@@ -56,10 +56,7 @@ namespace MonoGame.Extended.Shapes.Curves
                 new Angle(angle + Math.Sign(_arcAngle) * MathHelper.PiOver2));
         }
 
-        public override float Length(int resolution)
-        {
-            return Radius * _arcAngle;
-        }
+        public override float Length => Radius * _arcAngle;
 
         protected override void OnPointChange()
         {
@@ -92,10 +89,10 @@ namespace MonoGame.Extended.Shapes.Curves
             var a2 = Angle.FromVector(c - Center) - _startAngle;
             a2.WrapPositive();
             _arcAngle = a2;
-            // _startAngle.WrapPositive();
+            _startAngle.Wrap();
 
-            if (a1 > a2) _arcAngle = new Angle(_arcAngle.Radians - MathHelper.TwoPi);
-
+            if (a1 > a2)
+                _arcAngle = new Angle(_arcAngle.Radians - MathHelper.TwoPi);
         }
     }
 }
