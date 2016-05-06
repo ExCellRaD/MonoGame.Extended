@@ -137,6 +137,14 @@
     <Compile Include="SceneGraphs\SceneNode.cs" />
     <Compile Include="SceneGraphs\SceneNodeCollection.cs" />
     <Compile Include="SceneGraphs\SpriteBatchExtensions.cs" />
+    <Compile Include="Shapes\Curves\Arc.cs" />
+    <Compile Include="Shapes\Curves\Bezier.cs" />
+    <Compile Include="Shapes\Curves\CubicBezier.cs" />
+    <Compile Include="Shapes\Curves\CurveBase.cs" />
+    <Compile Include="Shapes\Curves\CurveF.cs" />
+    <Compile Include="Shapes\Curves\NBezier.cs" />
+    <Compile Include="Shapes\Curves\OrientedPoint.cs" />
+    <Compile Include="Shapes\Curves\QuadraticBezier.cs" />
     <Compile Include="Shapes\SpriteBatchExtensions.cs" />
     <Compile Include="Shapes\CircleF.cs" />
     <Compile Include="Shapes\PolygonF.cs" />
