@@ -56,7 +56,7 @@ namespace MonoGame.Extended.Shapes.Curves
                 new Angle(angle + Math.Sign(_arcAngle) * MathHelper.PiOver2));
         }
 
-        public override float Length => Radius * _arcAngle;
+        public override float Length => Math.Abs(Radius * _arcAngle);
 
         protected override void OnPointChange()
         {
@@ -68,8 +68,8 @@ namespace MonoGame.Extended.Shapes.Curves
         {
             var ax = a.X;
             var ay = a.Y;
-            if (ax == b.X) ax += GradientIncrement;
-            if (ay == b.Y) ay += GradientIncrement;
+            if (Math.Abs(ax - b.X) < float.Epsilon) ax += GradientIncrement;
+            if (Math.Abs(ay - b.Y) < float.Epsilon) ay += GradientIncrement;
             return (b.Y - ay) / (b.X - ax);
         }
 
@@ -77,7 +77,9 @@ namespace MonoGame.Extended.Shapes.Curves
         {
             var ma = Gradient(a, b);
             var mb = Gradient(b, c);
+            if (Math.Abs(ma - mb) < float.Epsilon) mb += GradientIncrement;
             var x0 = (ma * mb * (a.Y - c.Y) + mb * (a.X + b.X) - ma * (b.X + c.X)) / (2 * (mb - ma));
+            if (float.IsNaN(x0)) x0 = 0f;
             var y0 = (-2 * x0 + a.X + b.X) / (2 * ma) + (a.Y + b.Y) * 0.5f;
             Center = new Vector2(x0, y0);
 

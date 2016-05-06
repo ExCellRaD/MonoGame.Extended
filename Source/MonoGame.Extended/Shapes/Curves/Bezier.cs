@@ -8,9 +8,8 @@ namespace MonoGame.Extended.Shapes.Curves
     {
         protected Bezier(Vector2 start, Vector2 end) : base(start, end)
         {
-            var recommendedResolution = Math.Max(5, GetRecommendedResolution());
+            Resolution = Math.Max(5, GetRecommendedResolution());
             NormalizeLength();
-            Resolution = recommendedResolution;
         }
 
         private float[] _lengths;
@@ -40,10 +39,28 @@ namespace MonoGame.Extended.Shapes.Curves
 
         protected float Normalize(float t)
         {
+
             var arr = _lengths;
+            if (_lengths == null) return t;
             var count = arr.Length;
+
+            var start = Math.Min(count - 1, (int)(count * t));
+
             t *= _lengths[count - 1];
-            for (int i = 1; i < count; i++)
+
+            if (_lengths[start] > t)
+            {
+                for (int i = start - 1; i >= 0; i--)
+                {
+                    var prev = _lengths[i];
+                    if (prev > t) continue;
+                    var next = _lengths[i + 1];
+                    return (i + (t - prev) / (next - prev)) / (count - 1); //todo check
+                }
+                return 0;
+            }
+
+            for (int i = start + 1; i < count; i++)
             {
                 var next = _lengths[i];
                 if (next < t) continue;
@@ -56,9 +73,8 @@ namespace MonoGame.Extended.Shapes.Curves
         protected override void OnPointChange()
         {
             _lengths = null;
-            var recommendedResolution = Math.Max(5, GetRecommendedResolution());
+            Resolution = Math.Max(5, GetRecommendedResolution());
             NormalizeLength();
-            Resolution = recommendedResolution;
             base.OnPointChange();
         }
 

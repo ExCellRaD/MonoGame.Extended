@@ -6,6 +6,8 @@ namespace MonoGame.Extended.Shapes.Curves
     public class QuadraticBezier : Bezier
     {
         private Vector2 _controlPoint;
+        private Vector2 _startControl;
+        private Vector2 _controlEnd;
 
         public QuadraticBezier(Vector2 start, Vector2 control, Vector2 end) : base(start, end)
         {
@@ -22,9 +24,6 @@ namespace MonoGame.Extended.Shapes.Curves
                 OnPointChange();
             }
         }
-
-        private Vector2 _startControl;
-        private Vector2 _controlEnd;
 
         protected override void OnPointChange()
         {
@@ -73,7 +72,7 @@ namespace MonoGame.Extended.Shapes.Curves
             var angle = 2 * (i * _startControl + t * _controlEnd);
             return new OrientedPoint(pos, Angle.FromVector(angle));
         }
-        
+
         public void Split(float t, out QuadraticBezier first, out QuadraticBezier second)
         {
             t = Normalize(t);

@@ -3,16 +3,6 @@ using Microsoft.Xna.Framework;
 
 namespace MonoGame.Extended.Shapes.Curves
 {
-    public interface IPath
-    {
-        Vector2 EndPoint { get; set; }
-        Vector2 StartPoint { get; set; }
-        float Length { get; }
-        Vector2 GetPositionAt(float t);
-        Angle GetTangentAt(float t);
-        OrientedPoint GetOrientedPointAt(float t);
-    }
-
     public class Path : IPath
     {
         public Path()
@@ -21,19 +11,22 @@ namespace MonoGame.Extended.Shapes.Curves
         }
 
         private readonly List<CurveBase> _segments;
+
         public int SegmentCount { get; private set; }
+
         public float Length { get; private set; }
+
+        public Vector2 StartPoint
+        {
+            get { return _segments[0].EndPoint; }
+            set { _segments[0].EndPoint = value; }
+        }
+
         public Vector2 EndPoint
 
         {
             get { return _segments[SegmentCount - 1].EndPoint; }
             set { _segments[SegmentCount - 1].EndPoint = value; }
-        }
-        public Vector2 StartPoint
-
-        {
-            get { return _segments[0].EndPoint; }
-            set { _segments[0].EndPoint = value; }
         }
 
         private void AddSeg(CurveBase segment)
@@ -96,7 +89,5 @@ namespace MonoGame.Extended.Shapes.Curves
         {
             return GetSegmentAt(ref t).GetOrientedPointAt(t);
         }
-
-
     }
 }

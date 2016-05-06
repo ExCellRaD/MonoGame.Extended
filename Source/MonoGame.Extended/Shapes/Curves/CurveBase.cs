@@ -15,9 +15,6 @@ namespace MonoGame.Extended.Shapes.Curves
             _endPoint = end;
         }
 
-        /// <summary>
-        /// The startpoint or first position of this <see cref="CurveBase"/>
-        /// </summary>
         public Vector2 StartPoint
         {
             get { return _startPoint; }
@@ -29,9 +26,6 @@ namespace MonoGame.Extended.Shapes.Curves
             }
         }
 
-        /// <summary>
-        /// The endpoint or last position of this <see cref="CurveBase"/>
-        /// </summary>
         public Vector2 EndPoint
         {
             get { return _endPoint; }
@@ -43,10 +37,6 @@ namespace MonoGame.Extended.Shapes.Curves
             }
         }
 
-        /// <summary>
-        /// Returns an approximation of the length by getting some points and checking the distance between.
-        /// </summary>
-        /// <value>The amount of points calculated.</value>
         public abstract float Length { get; }
 
         /// <summary>
@@ -59,22 +49,10 @@ namespace MonoGame.Extended.Shapes.Curves
             OnPointChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        /// <summary>
-        /// Returns the point calculated by the curve at t.
-        /// </summary>
-        /// <param name="t">a value between 0 and 1</param>
         public abstract Vector2 GetPositionAt(float t);
 
-        /// <summary>
-        /// Returns the angle calculated by the curve tangent calculations at t.
-        /// </summary>
-        /// <param name="t">a value between 0 and 1</param>
         public abstract Angle GetTangentAt(float t);
 
-        /// <summary>
-        /// Returns the position and angle calculated by the curve calculations at t.
-        /// </summary>
-        /// <param name="t">a value between 0 and 1</param>
         public abstract OrientedPoint GetOrientedPointAt(float t);
     }
 }
