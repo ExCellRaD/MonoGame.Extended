@@ -20,6 +20,8 @@ namespace MonoGame.Extended.Shapes.Curves
             Calculate(start, middle, end);
         }
 
+        private Arc(Vector2 start, Vector2 end) : base(start, end) { }
+
         public float Radius { get; private set; }
         public Vector2 Center { get; private set; }
         public static float GradientIncrement { get; set; } = 0.00001f;
@@ -94,7 +96,39 @@ namespace MonoGame.Extended.Shapes.Curves
             _startAngle.Wrap();
 
             if (a1 > a2)
-                _arcAngle = new Angle(_arcAngle.Radians - MathHelper.TwoPi);
+                _arcAngle.Radians -= MathHelper.TwoPi;
+        }
+
+        public void Split(float t, out Arc first, out Arc second)
+        {
+            var middle = GetPositionAt(t);
+            first = FromCenter(Center, StartPoint, middle, _arcAngle > 0);
+            second = FromCenter(Center, middle, EndPoint, _arcAngle > 0);
+        }
+        //TODO check
+        public static Arc FromCenter(Vector2 center, Vector2 start, Vector2 end, bool positive)
+        {
+            var s = start - center;
+            var sa = Angle.FromVector(s);
+            var ea = Angle.FromVector(end - center) - sa;
+            ea.WrapPositive();
+            if (!positive)
+            {
+                ea.Radians -= MathHelper.TwoPi;
+            }
+            var m = new Angle(sa.Radians + 0.5f*ea.Radians);
+
+            var length = center.Length();
+            var arc = new Arc(start, end)
+            {
+                Center = center,
+                Radius = length,
+                _startAngle = sa,
+                _arcAngle = ea,
+                _middlePoint = center + m.ToVector(length)
+            };
+            arc._startAngle.WrapPositive();
+            return arc;
         }
     }
 }
