@@ -119,15 +119,14 @@ namespace MonoGame.Extended.Shapes.Curves
             var i = 1f - t;
             var ii = i * i;
             var tt = t * t;
-            var middle = tt * t * EndPoint - 3 * tt * i * _controlPoint2 + 3 * t * ii * _controlPoint1 - ii * i * StartPoint;
-
+            var middle = tt * t * EndPoint + 3 * tt * i * _controlPoint2 + 3 * t * ii * _controlPoint1 + ii * i * StartPoint;
             first = new CubicBezier(StartPoint,
-                t * _controlPoint1 - i * StartPoint,
-                tt * _controlPoint2 - 2 * t * i * _controlPoint1 + ii * StartPoint,
+                t * _controlPoint1 + i * StartPoint,
+                tt * _controlPoint2 + 2 * t * i * _controlPoint1 + ii * StartPoint,
                 middle);
             second = new CubicBezier(middle,
-                tt * EndPoint - 2 * t * i * _controlPoint2 + ii * _controlPoint1,
-                t * EndPoint - i * _controlPoint2,
+                tt * EndPoint + 2 * t * i * _controlPoint2 + ii * _controlPoint1,
+                t * EndPoint + i * _controlPoint2,
                 EndPoint);
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended.Shapes.Curves;
 
 namespace MonoGame.Extended.Shapes
 {
@@ -17,10 +18,26 @@ namespace MonoGame.Extended.Shapes
             if (_texture == null)
             {
                 _texture = new Texture2D(spriteBatch.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-                _texture.SetData(new[] {Color.White});
+                _texture.SetData(new[] { Color.White });
             }
 
             return _texture;
+        }
+
+        public static void DrawCurve(this SpriteBatch spriteBatch, CurveBase curve, Color color, float thickness, int resolution)
+        {
+            var tex = GetTexture(spriteBatch);
+            var resf = resolution - 1f;
+            var origin = new Vector2(0, 0.5f);
+            var scale = new Vector2(curve.Length / resf, thickness);
+            var prev = curve.EndPoint;
+            for (var i = resolution - 2; i >= 0; i--)
+            {
+                float t = i / resf;
+                var point = curve.GetPositionAt(t);
+                spriteBatch.Draw(tex, point, null, null, origin, -Angle.FromVector(prev - point), scale, color);
+                prev = point;
+            }
         }
 
         /// <summary>
@@ -82,7 +99,7 @@ namespace MonoGame.Extended.Shapes
         {
             FillRectangle(spriteBatch, rectangle.Location, rectangle.Size, color);
         }
-        
+
         /// <summary>
         /// Draws a filled rectangle
         /// </summary>
@@ -159,7 +176,7 @@ namespace MonoGame.Extended.Shapes
         {
             DrawLine(spriteBatch, new Vector2(x1, y1), new Vector2(x2, y2), color, thickness);
         }
-        
+
         /// <summary>
         /// Draws a line from point1 to point2 with an offset
         /// </summary>
@@ -178,7 +195,7 @@ namespace MonoGame.Extended.Shapes
 
             DrawLine(spriteBatch, point1, distance, angle, color, thickness);
         }
-        
+
         /// <summary>
         /// Draws a line from point1 to point2 with an offset
         /// </summary>
@@ -254,7 +271,7 @@ namespace MonoGame.Extended.Shapes
         {
             DrawPolygon(spriteBatch, new Vector2(x, y), CreateCircle(radius, sides), color, thickness);
         }
-        
+
         private static Vector2[] CreateCircle(double radius, int sides)
         {
             const double max = 2.0 * Math.PI;
@@ -264,7 +281,7 @@ namespace MonoGame.Extended.Shapes
 
             for (var i = 0; i < sides; i++)
             {
-                points[i] = new Vector2((float) (radius*Math.Cos(theta)), (float) (radius*Math.Sin(theta)));
+                points[i] = new Vector2((float)(radius * Math.Cos(theta)), (float)(radius * Math.Sin(theta)));
                 theta += step;
             }
 

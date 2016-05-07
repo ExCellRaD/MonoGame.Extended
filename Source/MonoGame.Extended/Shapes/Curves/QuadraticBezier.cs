@@ -77,13 +77,13 @@ namespace MonoGame.Extended.Shapes.Curves
         {
             t = Normalize(t);
             var i = 1f - t;
-            var middle = t * t * EndPoint - 2 * t * i * _controlPoint + i * i * StartPoint;
+            var middle = t * t * EndPoint + 2 * t * i * _controlPoint + i * i * StartPoint;
 
             first = new QuadraticBezier(StartPoint,
-                t * _controlPoint - i * StartPoint,
+                t * _controlPoint + i * StartPoint,
                 middle);
             second = new QuadraticBezier(middle,
-                t * EndPoint - i * _controlPoint,
+                t * EndPoint + i * _controlPoint,
                 EndPoint);
         }
     }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
+using MonoGame.Extended.Shapes;
 using MonoGame.Extended.Shapes.Curves;
 using MonoGame.Extended.Sprites;
 using MonoGame.Extended.ViewportAdapters;
@@ -14,9 +15,12 @@ namespace Demo.Curves
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private SpriteBatch _spriteBatch;
         private Camera2D _camera;
-        private CurveBase _curve;
+        private CubicBezier _curve;
+        private CubicBezier _curve1;
+        private CubicBezier _curve2;
         private Texture2D _logoTexture;
-        private int _count = 50;
+
+        private float _split = 0.5f;
 
         public Game1()
         {
@@ -35,23 +39,38 @@ namespace Demo.Curves
 
             _logoTexture = Content.Load<Texture2D>("logo-square-128");
 
-            //_curve = new CubicBezier(new Vector2(20, 20), new Vector2(), new Vector2(800, 0), new Vector2(780, 460));
-            _curve = new LineSegment(new Vector2(20, 20),  new Vector2(780, 460));
+            _curve = new CubicBezier(new Vector2(20, 20), new Vector2(), new Vector2(800, 0), new Vector2(780, 460));
+            //_curve = new LineSegment(new Vector2(20, 20), new Vector2(780, 460));
             // _curve = new Arc(new Vector2(20, 20), new Vector2(), new Vector2(780, 460));
+            _prev = Mouse.GetState();
         }
 
+        private bool _first = true;
+        private MouseState _prev;
 
         protected override void Update(GameTime gameTime)
         {
+            var state = Mouse.GetState();
+            if (state.LeftButton == ButtonState.Pressed && _prev.LeftButton == ButtonState.Released)
+            {
+                _first = !_first;
+            }
+            _prev = state;
 
-            ((LineSegment)_curve).EndPoint = Mouse.GetState().Position.ToVector2();
-            _count = (int)(_curve.Length / 15);
+            if (_first)
+                _curve.ControlPoint1 = state.Position.ToVector2();
+            else
+                _curve.ControlPoint2 = state.Position.ToVector2();
 
+            _curve.Split(_split, out _curve1, out _curve2);
             var keyboardState = Keyboard.GetState();
 
             if (keyboardState.IsKeyDown(Keys.Escape))
                 Exit();
-
+            if (keyboardState.IsKeyDown(Keys.Up))
+                _split *= 1.01f;
+            else if (keyboardState.IsKeyDown(Keys.Down))
+                _split *= 0.99f;
 
             base.Update(gameTime);
         }
@@ -62,13 +81,27 @@ namespace Demo.Curves
 
             _spriteBatch.Begin(blendState: BlendState.AlphaBlend, transformMatrix: _camera.GetViewMatrix());
 
-            for (var i = 0; i < _count; i++)
-            {
-                var t = i / (_count - 1f);
-                var point = _curve.GetOrientedPointAt(t);
-                _spriteBatch.Draw(_logoTexture, point.Position, rotation: -point.Angle, scale: new Vector2(0.1f, 0.03f), origin: new Vector2(0, 64));
-            }
 
+            _spriteBatch.DrawLine(_curve.StartPoint, _curve.ControlPoint1, Color.Green);
+            _spriteBatch.DrawLine(_curve.EndPoint, _curve.ControlPoint2, Color.Green);
+
+            _spriteBatch.DrawCurve(_curve, Color.Red, 6, (int)(_curve.Length / 5));
+
+            _spriteBatch.DrawLine(_curve1.StartPoint, _curve1.ControlPoint1, Color.Blue);
+            _spriteBatch.DrawLine(_curve1.EndPoint, _curve1.ControlPoint2, Color.Blue);
+            _spriteBatch.DrawLine(_curve2.StartPoint, _curve2.ControlPoint1, Color.Purple);
+            _spriteBatch.DrawLine(_curve2.EndPoint, _curve2.ControlPoint2, Color.Purple);
+
+            _spriteBatch.DrawCurve(_curve1, Color.White, 1, (int)(_curve1.Length / 5));
+            _spriteBatch.DrawCurve(_curve2, Color.Yellow, 1, (int)(_curve2.Length / 5));
+
+            _spriteBatch.Draw(_logoTexture, _curve.ControlPoint1, origin: new Vector2(64f), scale: new Vector2(0.2f));
+            _spriteBatch.Draw(_logoTexture, _curve.ControlPoint2, origin: new Vector2(64f), scale: new Vector2(0.2f));
+
+            _spriteBatch.Draw(_logoTexture, _curve1.ControlPoint1, origin: new Vector2(64f), scale: new Vector2(0.1f));
+            _spriteBatch.Draw(_logoTexture, _curve1.ControlPoint2, origin: new Vector2(64f), scale: new Vector2(0.1f));
+            _spriteBatch.Draw(_logoTexture, _curve2.ControlPoint1, origin: new Vector2(64f), scale: new Vector2(0.1f));
+            _spriteBatch.Draw(_logoTexture, _curve2.ControlPoint2, origin: new Vector2(64f), scale: new Vector2(0.1f));
 
             _spriteBatch.End();
 
