@@ -12,5 +12,13 @@ namespace MonoGame.Extended.Shapes.Curves
             Position = position;
             Angle = angle;
         }
+
+        public void GetOffsettedPoints(float distance, out Vector2 right, out Vector2 left)
+        {
+            var angle = Angle + new Angle(MathHelper.PiOver2);
+            var vector = angle.ToVector(distance);
+            right = Position + vector;
+            left = Position - vector;
+        }
     }
 }

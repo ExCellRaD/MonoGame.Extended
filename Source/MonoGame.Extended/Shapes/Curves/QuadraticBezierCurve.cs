@@ -3,13 +3,13 @@ using Microsoft.Xna.Framework;
 
 namespace MonoGame.Extended.Shapes.Curves
 {
-    public class QuadraticBezier : Bezier
+    public class QuadraticBezierCurve : BezierCurve
     {
         private Vector2 _controlPoint;
         private Vector2 _startControl;
         private Vector2 _controlEnd;
 
-        public QuadraticBezier(Vector2 start, Vector2 control, Vector2 end) : base(start, end)
+        public QuadraticBezierCurve(Vector2 start, Vector2 control, Vector2 end) : base(start, end)
         {
             ControlPoint = control;
         }
@@ -73,16 +73,16 @@ namespace MonoGame.Extended.Shapes.Curves
             return new OrientedPoint(pos, Angle.FromVector(angle));
         }
 
-        public void Split(float t, out QuadraticBezier first, out QuadraticBezier second)
+        public void Split(float t, out QuadraticBezierCurve first, out QuadraticBezierCurve second)
         {
             t = Normalize(t);
             var i = 1f - t;
             var middle = t * t * EndPoint + 2 * t * i * _controlPoint + i * i * StartPoint;
 
-            first = new QuadraticBezier(StartPoint,
+            first = new QuadraticBezierCurve(StartPoint,
                 t * _controlPoint + i * StartPoint,
                 middle);
-            second = new QuadraticBezier(middle,
+            second = new QuadraticBezierCurve(middle,
                 t * EndPoint + i * _controlPoint,
                 EndPoint);
         }

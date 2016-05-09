@@ -2,9 +2,9 @@
 
 namespace MonoGame.Extended.Shapes.Curves
 {
-    public class LineSegment : CurveBase
+    public class LinearCurve : CurveBase
     {
-        public LineSegment(Vector2 start, Vector2 end) : base(start, end) { }
+        public LinearCurve(Vector2 start, Vector2 end) : base(start, end) { }
         private Angle _tangent;
         private float _length;
         protected override void OnPointChange()

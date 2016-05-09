@@ -7,20 +7,20 @@ namespace MonoGame.Extended.Shapes.Curves
     /// <summary>
     /// Describes a curve that goes through three points, laying on the circumference of a circle
     /// </summary>
-    public class Arc : CurveBase
+    public class ArcCurve : CurveBase
     {
         private Angle _startAngle;
         private Angle _arcAngle;
         private Vector2 _middlePoint;
 
 
-        public Arc(Vector2 start, Vector2 middle, Vector2 end) : base(start, end)
+        public ArcCurve(Vector2 start, Vector2 middle, Vector2 end) : base(start, end)
         {
             _middlePoint = middle;
             Calculate(start, middle, end);
         }
 
-        private Arc(Vector2 start, Vector2 end) : base(start, end) { }
+        private ArcCurve(Vector2 start, Vector2 end) : base(start, end) { }
 
         public float Radius { get; private set; }
         public Vector2 Center { get; private set; }
@@ -99,14 +99,14 @@ namespace MonoGame.Extended.Shapes.Curves
                 _arcAngle.Radians -= MathHelper.TwoPi;
         }
 
-        public void Split(float t, out Arc first, out Arc second)
+        public void Split(float t, out ArcCurve first, out ArcCurve second)
         {
             var middle = GetPositionAt(t);
             first = FromCenter(Center, StartPoint, middle, _arcAngle > 0);
             second = FromCenter(Center, middle, EndPoint, _arcAngle > 0);
         }
         //TODO check
-        public static Arc FromCenter(Vector2 center, Vector2 start, Vector2 end, bool positive)
+        public static ArcCurve FromCenter(Vector2 center, Vector2 start, Vector2 end, bool positive)
         {
             var s = start - center;
             var sa = Angle.FromVector(s);
@@ -119,7 +119,7 @@ namespace MonoGame.Extended.Shapes.Curves
             var m = new Angle(sa.Radians + 0.5f*ea.Radians);
 
             var length = center.Length();
-            var arc = new Arc(start, end)
+            var arc = new ArcCurve(start, end)
             {
                 Center = center,
                 Radius = length,

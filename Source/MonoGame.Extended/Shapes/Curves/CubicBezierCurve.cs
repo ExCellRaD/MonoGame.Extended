@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace MonoGame.Extended.Shapes.Curves
 {
-    public class CubicBezier : Bezier
+    public class CubicBezierCurve : BezierCurve
     {
         public enum CubicBezierType //TODO implement this
         {
@@ -27,7 +27,7 @@ namespace MonoGame.Extended.Shapes.Curves
         private Vector2 _controlPoint1;
         private Vector2 _controlPoint2;
 
-        public CubicBezier(Vector2 start, Vector2 controlpoint1, Vector2 controlpoint2, Vector2 end) : base(start, end)
+        public CubicBezierCurve(Vector2 start, Vector2 controlpoint1, Vector2 controlpoint2, Vector2 end) : base(start, end)
         {
             _controlPoint1 = controlpoint1;
             _controlPoint2 = controlpoint2;
@@ -113,18 +113,18 @@ namespace MonoGame.Extended.Shapes.Curves
             return new OrientedPoint(pos, Angle.FromVector(angle));
         }
 
-        public void Split(float t, out CubicBezier first, out CubicBezier second)
+        public void Split(float t, out CubicBezierCurve first, out CubicBezierCurve second)
         {
             t = Normalize(t);
             var i = 1f - t;
             var ii = i * i;
             var tt = t * t;
             var middle = tt * t * EndPoint + 3 * tt * i * _controlPoint2 + 3 * t * ii * _controlPoint1 + ii * i * StartPoint;
-            first = new CubicBezier(StartPoint,
+            first = new CubicBezierCurve(StartPoint,
                 t * _controlPoint1 + i * StartPoint,
                 tt * _controlPoint2 + 2 * t * i * _controlPoint1 + ii * StartPoint,
                 middle);
-            second = new CubicBezier(middle,
+            second = new CubicBezierCurve(middle,
                 tt * EndPoint + 2 * t * i * _controlPoint2 + ii * _controlPoint1,
                 t * EndPoint + i * _controlPoint2,
                 EndPoint);

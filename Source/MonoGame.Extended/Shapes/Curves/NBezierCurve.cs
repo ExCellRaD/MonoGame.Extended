@@ -7,10 +7,10 @@ namespace MonoGame.Extended.Shapes.Curves
     /// <summary>
     /// N-point bezier
     /// </summary>
-    public class NBezier : Bezier
+    public class NBezierCurve : BezierCurve
     {
         private Vector2[] _controlPoints;
-        public NBezier(Vector2 start, Vector2 end, params Vector2[] controlpoints) : base(start, end)
+        public NBezierCurve(Vector2 start, Vector2 end, params Vector2[] controlpoints) : base(start, end)
         {
             _controlPoints = controlpoints;
         }

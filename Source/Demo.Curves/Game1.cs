@@ -15,9 +15,9 @@ namespace Demo.Curves
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private SpriteBatch _spriteBatch;
         private Camera2D _camera;
-        private CubicBezier _curve;
-        private CubicBezier _curve1;
-        private CubicBezier _curve2;
+        private CubicBezierCurve _curve;
+        private CubicBezierCurve _curve1;
+        private CubicBezierCurve _curve2;
         private Texture2D _logoTexture;
 
         private float _split = 0.5f;
@@ -39,7 +39,7 @@ namespace Demo.Curves
 
             _logoTexture = Content.Load<Texture2D>("logo-square-128");
 
-            _curve = new CubicBezier(new Vector2(20, 20), new Vector2(), new Vector2(800, 0), new Vector2(780, 460));
+            _curve = new CubicBezierCurve(new Vector2(20, 20), new Vector2(), new Vector2(800, 0), new Vector2(780, 460));
             //_curve = new LineSegment(new Vector2(20, 20), new Vector2(780, 460));
             // _curve = new Arc(new Vector2(20, 20), new Vector2(), new Vector2(780, 460));
             _prev = Mouse.GetState();

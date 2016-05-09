@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework;
 namespace MonoGame.Extended.Shapes.Curves
 {
     //handles the normalizing for each type of bezier
-    public abstract class Bezier : CurveBase
+    public abstract class BezierCurve : CurveBase
     {
-        protected Bezier(Vector2 start, Vector2 end) : base(start, end)
+        protected BezierCurve(Vector2 start, Vector2 end) : base(start, end)
         {
             _lengths = null;
         }
@@ -96,19 +96,19 @@ namespace MonoGame.Extended.Shapes.Curves
 
         protected abstract int GetRecommendedResolution();
 
-        public static Bezier Create(Vector2 start, Vector2 end, Vector2[] controlPoints)
+        public static BezierCurve Create(Vector2 start, Vector2 end, Vector2[] controlPoints)
         {
-            Bezier result;
+            BezierCurve result;
             switch (controlPoints.Length)
             {
                 case 1:
-                    result = new QuadraticBezier(start, controlPoints[0], end);
+                    result = new QuadraticBezierCurve(start, controlPoints[0], end);
                     break;
                 case 2:
-                    result = new CubicBezier(start, controlPoints[0], controlPoints[1], end);
+                    result = new CubicBezierCurve(start, controlPoints[0], controlPoints[1], end);
                     break;
                 default:
-                    result = new NBezier(start, end, controlPoints);
+                    result = new NBezierCurve(start, end, controlPoints);
                     break;
             }
             return result;

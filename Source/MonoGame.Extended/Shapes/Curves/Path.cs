@@ -36,23 +36,23 @@ namespace MonoGame.Extended.Shapes.Curves
             Length += segment.Length;
         }
 
-        public LineSegment AddLine(Vector2 end)
+        public LinearCurve AddLine(Vector2 end)
         {
-            var segment = new LineSegment(EndPoint, end);
+            var segment = new LinearCurve(EndPoint, end);
             AddSeg(segment);
             return segment;
         }
 
-        public Arc AddArc(Vector2 middle, Vector2 end)
+        public ArcCurve AddArc(Vector2 middle, Vector2 end)
         {
-            var segment = new Arc(EndPoint, middle, end);
+            var segment = new ArcCurve(EndPoint, middle, end);
             AddSeg(segment);
             return segment;
         }
 
-        public Bezier AddBezier(Vector2 end, params Vector2[] controlPoints)
+        public BezierCurve AddBezier(Vector2 end, params Vector2[] controlPoints)
         {
-            var segment = Bezier.Create(EndPoint, end, controlPoints);
+            var segment = BezierCurve.Create(EndPoint, end, controlPoints);
             AddSeg(segment);
             return segment;
         }
